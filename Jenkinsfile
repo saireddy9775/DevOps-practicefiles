@@ -1,5 +1,8 @@
 pipeline {
     agent any
+	environment {
+		BRANCH = SAIBRANCH-01
+	}	
     stages {
 
         stage('Clone Repo') {
