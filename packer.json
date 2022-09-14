@@ -1,0 +1,81 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "us_east_1_ami": "ami-04763b3055de4860b",
+    "name": "aws-docker-ce-base",
+    "us_east_1_name": "ubuntu-xenial-docker-ce-base",
+    "ssh_username": "ubuntu"
+  },
+  "builders": [
+    {
+      "name": "{{user `us_east_1_name`}}",
+      "type": "amazon-ebs",
+      "access_key": "AKIA2QEFLENWCZ57K3KB",
+      "secret_key": "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",
+      "region": "us-east-1",
+      "vpc_id": "",
+      "subnet_id": "",
+      "source_ami": "{{user `us_east_1_ami`}}",
+      "instance_type": "t2.micro",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_timeout": "10m",
+      "ami_name": "{{user `us_east_1_name`}} {{timestamp}}",
+      "ami_description": "{{user `us_east_1_name`}} AMI",
+      "run_tags": {
+        "ami-create": "{{user `us_east_1_name`}}"
+      },
+      "tags": {
+        "ami": "{{user `us_east_1_name`}}"
+      },
+      "associate_public_ip_address": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "bootstrap_docker_ce.sh",
+      "destination": "/tmp/bootstrap_docker_ce.sh"
+    },
+    {
+          "type": "file",
+          "source": "cleanup.sh",
+          "destination": "/tmp/cleanup.sh"
+    },
+	{
+          "type": "file",
+          "source": "docker.service",
+          "destination": "/tmp/docker.service"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+        "whoami",
+        "cd /tmp",
+        "chmod +x bootstrap_docker_ce.sh",
+        "chmod +x cleanup.sh",
+		"ls -alh /tmp"
+      ]
+	  
+    },
+	{
+      "type": "shell",
+      "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "scripts": ["bootstrap_docker_ce.sh"]
+	},
+	{
+      "type": "shell",
+      "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+	    "ls -al",
+	    "sudo cp /tmp/docker.service /lib/systemd/system/docker.service",
+        "systemctl daemon-reload",
+        "service docker restart"
+
+      ]
+	  
+    }
+	
+  ]
+}

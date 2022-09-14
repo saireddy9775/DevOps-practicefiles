@@ -1,0 +1,14 @@
+#!/bin/bash
+ls -al
+pwd
+echo "Running the packer script now..!!"
+echo .
+echo .
+#packer build packer.json
+packer build -var 'aws_access_key=AKIA2QEFLENWID5BMZV2' -var 'aws_secret_key=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' packer.json
+echo .
+echo .
+terraform init
+terraform apply --var-file test.tfvars -var 'aws_access_key=AKIA2QEFLENWID5BMZV2' -var 'aws_secret_key=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' -auto-approve
+echo "Infra Built Sucessfully....!!!"
+#docker -H 10.1.1.220 run --rm -dit --name nginx1 --hostname nginx1 -p 8000:80 nginx:latest
