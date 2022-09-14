@@ -5,15 +5,16 @@
     "us_east_1_ami": "ami-04763b3055de4860b",
     "name": "aws-docker-ce-base",
     "us_east_1_name": "ubuntu-xenial-docker-ce-base",
-    "ssh_username": "ubuntu"
+    "ssh_username": "ubuntu",
+    "vpc_id": "vpc-067cfa5656728f4a6",
+    "subnet_id": "subnet-06245dd703f5f6333",  
   },
   "builders": [
     {
       "name": "{{user `us_east_1_name`}}",
       "type": "amazon-ebs",
-      "access_key": "AKIA2QEFLENWCZ57K3KB",
-      "secret_key": "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",
-      "region": "us-east-1",
+      "access_key": "{{user `us_east_1_name`}}",
+      "secret_key":"{{user `us_east_1_name`}}",
       "vpc_id": "",
       "subnet_id": "",
       "source_ami": "{{user `us_east_1_ami`}}",
